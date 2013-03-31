@@ -1,0 +1,43 @@
+body{
+	background:gray;
+}
+#conteiner {
+		
+	 width:1000px; 
+	 margin: 0 auto;
+	 background:white;
+	 color:gray;
+	 padding:20px;
+}
+#form{
+	position:relative;
+	width:80%;
+	height:200px;	
+	margin:0 auto ;
+	border-bottom:2px gray dashed;
+}
+#form1{
+	position:relative;
+	width:30%;
+	float:left;	
+}
+#form2{
+	position:relative;
+	width:50%;
+	float:left;	
+}
+#addButton{
+	position:relative;
+	margin-top:130px;
+}
+#row{
+	position:relative;
+	width:80%;	
+	margin:0 auto;
+	border-bottom:2px gray double;	
+	text-align:justify;
+}
+#edtime{
+	position:relative;
+	float:right;
+}
