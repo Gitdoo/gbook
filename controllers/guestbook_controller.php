@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Class GuestbookController
  * описує всі дії користувача 
@@ -11,13 +11,49 @@ class GuestbookController extends Controller{
 		$this->view = new View();
 	}
 	/**
+	* ВИводить інформацію про користувача
+	*/
+	function info()
+	{
+		$data=$this->model->model_info();
+		$this->view->generate('info.tpl','main.tpl',$data);
+	}
+	
+	function logout()
+	{	
+		$data=$this->model->model_logout();
+		$this->view->generate('view.tpl','main.tpl',$data);
+		
+	}
+	function login()
+	{	
+		$data=$this->model->model_login();
+		$this->view->generate('view.tpl','main.tpl',$data);
+	}
+	/**
+	* метод registration(),який генерує форму для введення даних 
+	*  
+	*/
+	function registration()
+	{	
+		$this->view->generate('registration.tpl','main.tpl');
+	}
+	/**
+	* метод register(),який вставляє введені дані з форми у базу даних при реєстрації
+	*  
+	*/
+	function register()
+	{	
+		$data=$this->model->model_register();
+		$this->view->generate('view.tpl','main.tpl',$data);
+	}
+	/**
 	* метод add(),який генерує форму для введення даних
 	*  
 	*/
 	function add()
-	{
-		$this->view->generate('form.php', 'main.php');
-		
+	{	session_start();
+		$this->view->generate('form.tpl', 'main.tpl');
 	}
 	/**
 	* метод insert(),який вставляє введені дані з форми у базу даних
@@ -26,9 +62,7 @@ class GuestbookController extends Controller{
 	function insert()
 	{
 		$data=$this->model->model_insert();
-		$this->view->generate('view.php', 'main.php',$data);
-		
-		
+		$this->view->generate('view.tpl', 'main.tpl',$data);	
 	}
 	/**
 	* метод edit(),вибирає дані з бази даних,записує їх у форму;
@@ -39,12 +73,12 @@ class GuestbookController extends Controller{
 	{	
 		if($id==="insert"){
 		$data=$this->model->model_edit();
-		$this->view->generate('view.php', 'main.php',$data);
+		$this->view->generate('view.tpl', 'main.tpl',$data);
 		}
 		else
 		{
 		$data=$this->model->model_view($id);
-		$this->view->generate('form.php', 'main.php',$data);
+		$this->view->generate('form.tpl', 'main.tpl',$data);
 		
 		}
 	}
@@ -54,37 +88,36 @@ class GuestbookController extends Controller{
 	function delete()
 	{
 		$data=$this->model->model_delete();
-		$this->view->generate('view.php', 'main.php',$data);
-	
+		$this->view->generate('view.tpl', 'main.tpl',$data);
 	}
-	
 	/**
 	* показує один пост 
 	*/
-	function view($id){
+	function view($id)
+	{
 		$data=$this->model->model_view($id);
-		$this->view->generate('view.php', 'main.php', $data);
+		$this->view->generate('view.tpl', 'main.tpl', $data);
 	}
 	/**
 	* показує всі пост 
 	*/
-	function lists(){
+	function lists()
+	{
 		$data=$this->model->model_lists();
-		$this->view->generate('lists.php', 'main.php', $data);
+		$this->view->generate('lists.tpl', 'main.tpl', $data);
 	}
 	/**
 	* показує повідомлення про те, що такої сторінки не існує
 	*/
-	function not_exist(){
-		$this->view->generate('view.php', 'main.php', "Такої сторінки не знайдено");
+	function not_exist()
+	{
+		$this->view->generate('view.tpl', 'main.tpl', "Такої сторінки не знайдено");
 	}
-	
 	function __destruct()
 	{
 		unset($this->model);
 		unset($this->view);
 	}
-	
 }
 ?>
 
