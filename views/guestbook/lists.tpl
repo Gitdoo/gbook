@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 if(!empty($data)){
 	foreach($data as $temp)
 	{
@@ -22,9 +22,9 @@ if(!empty($data)){
 		 }
 		 if(!empty($_SESSION['id'])&&$_SESSION['id']===$temp['id_user'] ){
 		?>                                     
-		<br><br><form action='edit/<?php echo $local;?>' method='post'><input type='submit' name='submit'value='Редагувати'></form>
-		<form action='delete' method='post'><input type='submit' name='submit'value='Видалити'><input type='hidden'name='id' value=<?php echo $local;?>></form>
-		<form action='view/<?php echo $local;?>' method='post'><input type='submit' name='submit'value='Показати'></form>
+		<br><br><form action='guestbook/edit/<?php echo $local;?>' method='post'><input type='submit' name='submit'value='Редагувати'></form>
+		<form action='guestbook/delete' method='post'><input type='submit' name='submit'value='Видалити'><input type='hidden'name='id' value=<?php echo $local;?>></form>
+		<form action='guestbook/view/<?php echo $local;?>' method='post'><input type='submit' name='submit'value='Показати'></form>
 		
 <?php 
 		}

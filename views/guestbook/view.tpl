@@ -11,9 +11,9 @@
     <br><b><u>Дата написання:</u></b><?php echo date("H:i:s  d-m-Y",$data['create_time']);?>
 	<br><b><u>Запис додав:</u></b><?php echo $data['email'];?>
     <br><br><br>
-	<form action='/edit/<?php echo $local;?>' method='post'><input type='submit' name='submit'value='Редагувати'></form> 
+	<form action='/guestbook/edit/<?php echo $local;?>' method='post'><input type='submit' name='submit'value='Редагувати'></form> 
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <form action='/delete' method='post'><input type='hidden'name='id' value=<?php echo $local;?>><input type='submit' name='submit'value='Видалити'></form>
+    <form action='/guestbook/delete' method='post'><input type='hidden'name='id' value=<?php echo $local;?>><input type='submit' name='submit'value='Видалити'></form>
 </div>
 <?php 
 		}

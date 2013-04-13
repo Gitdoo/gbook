@@ -11,48 +11,11 @@ class GuestbookController extends Controller{
 		$this->view = new View();
 	}
 	/**
-	* ВИводить інформацію про користувача
-	*/
-	function info()
-	{
-		$data=$this->model->model_info();
-		$this->view->generate('info.tpl','main.tpl',$data);
-	}
-	
-	function logout()
-	{	
-		$data=$this->model->model_logout();
-		$this->view->generate('view.tpl','main.tpl',$data);
-		
-	}
-	function login()
-	{	
-		$data=$this->model->model_login();
-		$this->view->generate('view.tpl','main.tpl',$data);
-	}
-	/**
-	* метод registration(),який генерує форму для введення даних 
-	*  
-	*/
-	function registration()
-	{	
-		$this->view->generate('registration.tpl','main.tpl');
-	}
-	/**
-	* метод register(),який вставляє введені дані з форми у базу даних при реєстрації
-	*  
-	*/
-	function register()
-	{	
-		$data=$this->model->model_register();
-		$this->view->generate('view.tpl','main.tpl',$data);
-	}
-	/**
 	* метод add(),який генерує форму для введення даних
 	*  
 	*/
 	function add()
-	{	session_start();
+	{	
 		$this->view->generate('form.tpl', 'main.tpl');
 	}
 	/**

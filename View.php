@@ -16,28 +16,35 @@ class View
 		include 'views/layout/main_header.tpl';
 		ob_end_flush();
 			
-			if( empty($_SESSION['id']) )
+			if( empty($_SESSION['user']) )
 			{	
 				if($content_view!=="registration.tpl"){
 				ob_start();
 				include 'views/guestbook/logform.tpl';
-				ob_end_flush();
+				$logform=ob_get_contents();
+				ob_end_clean();	
 				}
 				
 			}
 			else
 			{	
-				echo("<a href='/add'><h3>Додоти новий запис</h3></a>");
 				ob_start();
+				echo("<a href='/guestbook/add'><h3>Додоти новий запис</h3></a>");
 				include 'views/guestbook/outform.tpl';
-				ob_end_flush();
+				$logform=ob_get_contents();
+				ob_end_clean();
 			}
-		include 'views/layout/'.$template_view;	
+		ob_start();
+		include 'views/guestbook/'.$content_view;;
+		$content=ob_get_contents();
+		ob_end_clean();	
 		
 		ob_start();
+		include 'views/layout/'.$template_view;	
+		ob_flush();
 		include 'views/layout/main_footer.tpl';
 		ob_end_flush();
 	}
 }
-
+//git push -u origin master
 ?>
