@@ -49,26 +49,17 @@ class UserModel extends Model{
 		{	
 			$hash=$_POST['hidden'];
 	
-			$sql="SELECT `id_user` FROM `pass_recovery` WHERE `hashode`='$hash'";
+			$sql="SELECT `id`,`family`,`name` FROM `users` WHERE `hashode`='$hash'";
 			$query=mysql_query($sql);
 			if(!$query) $error="Помилка при підключенні до бази даних";
-			$myrow = mysql_fetch_assoc($query);
-			$id=$myrow['id_user'];
+			$data = mysql_fetch_assoc($query);
+			$id=$data['id'];
 			$pass=md5($_POST['password']);
 			
-			$sql="UPDATE `users` SET `password`='$pass' WHERE `id`='$id'";
+			$sql="UPDATE `users` SET `password`='$pass',`hashode`='NULL',`expires_time`='NULL' WHERE `id`='$id'";
 			$query=mysql_query($sql);
 			if(!$query) $error="Помилка при підключенні до бази даних";
-			
-			$sql="DELETE FROM `pass_recovery` WHERE `id_user`='$id'";
-			$query=mysql_query($sql);
-			if(!$query) return "Помилка при підключенні до бази даних";
-			
-			$sql="SELECT `family`,`name`,`email` FROM `users` WHERE `id`='$id'";
-			$query=mysql_query($sql);
-			if(!$query) return "Помилка при підключенні до бази даних";
-			$data=mysql_fetch_assoc($query);
-			
+								
 			$subject="Вітаємо {$data['family']} {$data['name']}, ваш новий пароль {$_POST['password']}";
 			$header= "Content-type: text/html; charset=utf-8";
 			
@@ -84,27 +75,23 @@ class UserModel extends Model{
 	*/
 	public function  model_token($id)
 	{
-		$sql="SELECT * FROM `pass_recovery` WHERE `hashode`='$id'";
+		$sql="SELECT `id`,`expires_time` FROM `users` WHERE `hashode`='$id'";
 		$query=mysql_query($sql);
 		if(!$query) return $error="Помилка при підключенні до бази даних";
 		$myrow = mysql_fetch_assoc($query);
 		$times=time();
-		if( ( !empty( $myrow['id_user'] ) )&& ( $times<=$myrow['time'] ) )
+		if( ( !empty( $myrow['id'] ) )&& ( $times<=$myrow['expires_time'] ) )
 		{
 			$error="Ok";
 		}
 		else
-			if ( ( !empty( $myrow['id_user'] ) )&& $times>$myrow['time'])
-			{
-				$error="Ваш час вийшов";
-				$sql="DELETE FROM `pass_recovery` WHERE `time`<'$times'";
-				$query=mysql_query($sql);
-				if(!$query) return $error="Помилка при підключенні до бази даних";
-			}
-			else
-			{
-				$error="Нічого не знайдено";
-			}
+		{
+			$id=$myrow['id'];
+			$sql="UPDATE `users` SET `hashode`='',`expires_time`='0' WHERE id='$id'";
+			$query=mysql_query($sql);
+			if(!$query) return $error="Помилка при підключенні до бази даних";
+			$error="Ваше посилання не валідне";
+		}
 	
 	return $error;
 	}
@@ -134,7 +121,7 @@ class UserModel extends Model{
 				
 				$times=time()+86400;
 				$hash=md5($login);
-				$sql="INSERT INTO `pass_recovery` (`id_user`,`hashode`,`time`)VALUES ('$myrow[id]','$hash','$times')";
+				$sql="UPDATE `users` SET `hashode`='$hash',`expires_time`='$times' WHERE `email`='$login'";
 				$query=mysql_query($sql);
 				if(!$query) return $error="Помилка при підключенні до бази даних";
 				$href=$_SERVER['SERVER_NAME']."/user/token/".$hash;
@@ -174,7 +161,6 @@ class UserModel extends Model{
 		unset($_SESSION['user']);
 		$error="Ви вийшли";
 		$this->update();
-		header("Location:/");
 		return $error;
 		}
 	}
@@ -222,6 +208,7 @@ class UserModel extends Model{
 				$_SESSION['user']['login']=$myrow['email']; 
 				$_SESSION['user']['id']=$myrow['id'];
 				$error.="Ви успішно зайшли! ";
+				
 			}
 			else 
 			{
