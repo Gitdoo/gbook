@@ -30,23 +30,17 @@ class GuestbookModel extends Model{
 		$_POST['short_text']=htmlspecialchars($_POST['short_text']);
 		
 		$_POST['long_text']=htmlspecialchars($_POST['long_text']);
-		if( empty($_POST['name']) ) 
+		if( empty($_POST['name']) or empty($_POST['short_text'])  or empty($_POST['long_text'])) 
 		{	
-			$error.="Ви не ввели назву!<br>";
-			$flag=true;
-		}
-		if (empty($_POST['short_text'])) 
-		{	
-			$error.="Ви не ввели короткий текст!<br>";
-			$flag=true;
-		}
-		if (empty($_POST['long_text'])) 
-		{	
-			$error.="Ви не ввели повний текст!<br>";
+			$error.="Ви не заповнили всі поля!<br>";
 			$flag=true;
 		}
 		if(!$flag)
 		{	
+			if ( !preg_match("/^[A-Za-z0-9_\-\s\.,]+$/", $_POST['name']) or !preg_match("/^[A-Za-z0-9_\-\s\.,]+$/", $_POST['short_text']) or !preg_match("/^[A-Za-z0-9_\-\s\.,]+$/", $_POST['long_text']) ) 
+			{
+				return $error.="Ви ввели не допустимі символи!!!";
+			}
 			$login=$_SESSION['user']['login'];
 			$sql="SELECT `id` FROM `users` WHERE email='$login';";
 			$query = mysql_query($sql);
@@ -70,6 +64,9 @@ class GuestbookModel extends Model{
 	*/
 	public function model_delete(){
 		$this->update();
+		if ( !preg_match("/^[0-9]+$/", $id) ) 
+			return $error="Ви не пройшли валідацію!!!";
+			
 		if( isset( $_POST['submit'] ) ){
 			$sql="DELETE FROM `guestbook` WHERE id=".$_POST['id'].";";
 			if(mysql_query($sql)) 
@@ -94,23 +91,18 @@ class GuestbookModel extends Model{
 		$_POST['name']=htmlspecialchars($_POST['name']);
 		$_POST['short_text']=htmlspecialchars($_POST['short_text']);
 		$_POST['long_text']=htmlspecialchars($_POST['long_text']);              	
-			if( empty($_POST['name']) ) 
-			{	
-				$error.="Ви не ввели назву!<br>";
-				$flag=true;
-			}
-			if (empty($_POST['short_text'])) 
-			{	
-				$error.="Ви не ввели короткий текст!<br>";
-				$flag=true;
-			}
-			if (empty($_POST['long_text'])) 
-			{	
-				$error.="Ви не ввели повний текстasdasd!<br><a href='/add'>Назад</a>";
-				$flag=true;
-				
-			}
-			if($error===""){
+		if( empty($_POST['name']) or empty($_POST['short_text'])  or empty($_POST['long_text'])) 
+		{	
+			$error.="Ви не заповнили всі поля!<br>";
+			$flag=true;
+		}
+			
+			if(!$flag){
+				if ( !preg_match("/^[A-Za-z0-9_\-\.,]+$/", $_POST['name']) or !preg_match("/^[A-Za-z0-9_\-\.,]+$/", $_POST['short_text']) or !preg_match("/^[A-Za-z0-9_\-\.,]+$/", $_POST['long_text']) ) 
+				{
+					return $error.="Ви Ввели не допустимі символи!!!";
+					
+				}
 				$sql="UPDATE `guestbook` SET `name`='{$_POST['name']}', `short_text`='{$_POST['short_text']}',
 										 `long_text`='{$_POST['long_text']}',`edit_time`='$times' WHERE id='{$_POST['id']}';";
 				$add=mysql_query($sql);
@@ -130,6 +122,8 @@ class GuestbookModel extends Model{
 	*/
 	public function model_view($id){
 		$this->update();
+		if ( !preg_match("/^[0-9]+$/", $id) ) 
+			return $error="Ви не пройшли валідацію!!!";
 		if( !empty( $_POST['submit'] ) ){
 			$sql="SELECT * FROM `guestbook` WHERE id=".$id.";";
 			$query = mysql_query($sql);
@@ -153,10 +147,23 @@ class GuestbookModel extends Model{
 	/**
 	* Вибирає усі дані з бази даних 
 	*/
-	public function model_lists(){
+	public function model_lists($pagenum){
 	
 		$this->update();
-	 $sql="SELECT * FROM `guestbook` order by 'create_time' DESC;";	
+	if ( !preg_match("/^[0-9]+$/", $pagenum) ) return "";
+		
+		$query = mysql_query("SELECT COUNT(`id`) AS `count` FROM `guestbook`");
+		$row = mysql_fetch_assoc($query);
+		$rows_max=$row['count'];		
+		$show_posts=5;
+		
+		$_SESSION['post_count']=$rows_max;
+		$_SESSION['pagenum']=$pagenum;
+		$_SESSION['show_posts']=$show_posts;
+		
+		$offset=$show_posts * ($pagenum-1);
+		
+	 $sql="SELECT * FROM `guestbook` ORDER BY 'create_time' DESC LIMIT $offset, $show_posts;";
 	 $query = mysql_query($sql);
 	 if (!$query) return "неможливо вибрати дані з таблиці!";	
 	 while ($data=mysql_fetch_assoc($query))

@@ -64,9 +64,9 @@ class GuestbookController extends Controller{
 	/**
 	* показує всі пост 
 	*/
-	function lists()
+	function lists($pagenum)
 	{
-		$data=$this->model->model_lists();
+		$data=$this->model->model_lists($pagenum);
 		$this->view->generate('lists.tpl', 'main.tpl', $data);
 	}
 	/**

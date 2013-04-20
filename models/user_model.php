@@ -29,14 +29,9 @@ class UserModel extends Model{
 		$_POST['password']=trim($_POST['password']);
 		$_POST['password2']=trim($_POST['password2']);
 	
-		if (empty($_POST['password'])) 
+		if (empty($_POST['password']) or empty($_POST['password2']) ) 
 		{	
-			$error.="Ви не ввели пароль <br>";
-			$flag=true;
-		}
-		if (empty($_POST['password2'])) 
-		{	
-			$error.="Ви не ввели повторний пароль!<br>";
+			$error.="Ви не заповнили всі поля <br>";
 			$flag=true;
 		}
 		if ($_POST['password']!==$_POST['password2']) 
@@ -47,6 +42,8 @@ class UserModel extends Model{
 		
 		if(!$flag)
 		{	
+			if ( !preg_match("/^[0-9a-zA-Z]+$/", $_POST['password']) ) 
+					return $error="Ви не пройшли валідацію!!!Пароль повинен складатися тільки з букв та цифр!!!";	
 			$hash=$_POST['hidden'];
 	
 			$sql="SELECT `id`,`family`,`name` FROM `users` WHERE `hashode`='$hash'";
@@ -100,14 +97,15 @@ class UserModel extends Model{
 	* Використовується нова таблиця для збереження id користувача, hash коду і часу
 	*/
 	public function  model_sendpass()
-	{
-		if( empty($_POST['login']) )
+	{	$login=$_POST['login'];
+		if( empty($login) )
 		{	
 			$error="Ви нічого не ввели	<br> <a href='/user/forgotpass'>Назад</a>";
 		}
 		else
 		{
-			$login=$_POST['login'];
+			if ( !preg_match("/^[a-zA-Z1-9]+[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/i", $login) ) 
+				return $error="Ви ввели email у неправильному форматі!!! <br><a href='/user/forgotpass'>Назад</a>";
 			$sql="SELECT `id` FROM `users` WHERE `email`='$login'";
 			$query=mysql_query($sql);
 			if(!$query) $error="Помилка при підключенні до бази даних";
@@ -236,37 +234,19 @@ class UserModel extends Model{
 		$_POST['email']=trim($_POST['email']);
 		$_POST['password']=trim($_POST['password']);
 		$_POST['password2']=trim($_POST['password2']);
-		if( empty($_POST['family']) ) 
+		if( empty($_POST['family']) or empty($_POST['name']) or empty($_POST['email']) or empty($_POST['password']) or empty($_POST['password2']) ) 
 		{	
-			$error.="Ви не ввели прізвище!<br>";
+			$error.="Ви не ввели всю інформацію!<br>";
 			$flag=true;
 		}
-		if( empty($_POST['name']) ) 
-		{	
-			$error.="Ви не ввели імя!<br>";
-			$flag=true;
-		}
-		if (empty($_POST['email'])) 
-		{	
-			$error.="Ви не ввели email!<br>";
-			$flag=true;
-		}
-		if (empty($_POST['password'])) 
-		{	
-			$error.="Ви не ввели пароль <br>";
-			$flag=true;
-		}
-		if (empty($_POST['password2'])) 
-		{	
-			$error.="Ви не ввели повторний пароль!<br>";
-			$flag=true;
-		}
+		
 		if ($_POST['password']!==$_POST['password2']) 
 		{	
 			$error.="Паролі не співпадають!<br>";
 			$flag=true;
 		}
 		$login=$_POST['email'];
+		if ( !preg_match("/^[a-zA-Z1-9]+[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/i", $login) ) $error.= "Ви не пройшли валідацію!!!";
 		$sql="SELECT `id` FROM `users` WHERE email='$login';";
 		$query = mysql_query($sql);
 		$data = mysql_fetch_assoc($query);
