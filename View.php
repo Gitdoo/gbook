@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * базовий клас View
  */
@@ -44,6 +44,15 @@ class View
 		$content=ob_get_contents();
 		ob_end_clean();	
 		
+		if($content_view =="lists.tpl")
+		{
+			ob_start();
+			include 'views/guestbook/pagination.tpl';
+			$pag=ob_get_contents();
+			ob_end_clean();
+			$content.=$pag;
+		}
+
 		ob_start();
 		include 'views/layout/'.$template_view;	
 		ob_end_flush();

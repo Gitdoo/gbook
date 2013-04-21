@@ -1,5 +1,6 @@
 <?php 
-if(!empty($data)){
+if(!empty($data))
+{
 	foreach($data as $temp)
 	{
 		$local=$temp['id'];
@@ -29,36 +30,9 @@ if(!empty($data)){
 <?php 
 		}
 	}
-?>
-		<div align='center'>
-		<a href='/guestbook/lists/page/1'>Перша</a>&nbsp;&nbsp;
-	
-<?php	
-		$page=1;
-		
-		if($_SESSION['pagenum']>1)
-		echo "<a href='/guestbook/lists/page/".($_SESSION['pagenum']-1)."'>Попередня</a>&nbsp;&nbsp;";
-
-		$page_count=ceil($_SESSION['post_count']/$_SESSION['show_posts']);
-		while($page<=$page_count)
-		{
-			if($page==$_SESSION['pagenum']){ echo "$page &nbsp;&nbsp;";}
-			else 
-			{
-			
-			echo "<a href='/guestbook/lists/page/".$page."'>$page</a>&nbsp;&nbsp;";
-
-			}
-			$page++;
-		}
-		if($_SESSION['pagenum']<$page_count)
-
-		echo "<a href='/guestbook/lists/page/".($_SESSION['pagenum']+1)."'>Наступна</a>&nbsp;&nbsp;";
-		echo "<a href='/guestbook/lists/page/".$page_count."'>Остання</a></div>";
-
-	}
-	else
-	{
-	echo "Немає записів";
-	}
+}
+else
+{
+echo "Немає записів";
+}
 ?>

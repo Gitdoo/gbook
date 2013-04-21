@@ -13,7 +13,7 @@
     <br><br><br>
 	<form action='/guestbook/edit/<?php echo $local;?>' method='post'><input type='submit' name='submit'value='Редагувати'></form> 
     &nbsp;&nbsp;&nbsp;&nbsp;
-    <form action='/guestbook/delete' method='post'><input type='hidden'name='id' value=<?php echo $local;?>><input type='submit' name='submit'value='Видалити'></form>
+    <form action='/guestbook/delete/<?php echo $local;?>' method='post'><input type='submit' name='submit'value='Видалити'></form>
 </div>
 <?php 
 		}
